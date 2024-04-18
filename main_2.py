@@ -133,20 +133,20 @@ def print_matched_lines(entry_text, database_text, threshold, vectorizer):
     Esta función analiza los textos y calcula la similitud e imprime los textos de
     ambos archivos cuyo plagio fue encontrado.  
     """
-    entry_lines = entry_text.split(' ')
-    database_lines = database_text.split(' ')
+    entry_lines = entry_text.split('\n')
+    database_lines = database_text.split('\n')
     matched_lines = []
-    for entry_line, database_line in zip(entry_lines, database_lines):
-        similarity = calculate_similarity(entry_line, database_line, vectorizer)
-        if similarity > threshold:
-            matched_lines.append((entry_line, database_line))
+    for entry_line in entry_lines:
+        for database_line in database_lines:
+            similarity = calculate_similarity(entry_line, database_line, vectorizer)
+            if similarity > threshold:
+                matched_lines.append((entry_line, database_line))
 
     if matched_lines:
-        print("Texto Plagiado: ")
-        print(matched_lines)
+        print(f"Texto Plagiado: ")
         for entry_line, database_line in matched_lines:
-            print(f"Archivo Prueba: {entry_line}")
-            print(f"Base de Datos: {database_line}")
+            print(f"\nArchivo Prueba: {entry_line}")
+            print(f"\nBase de Datos: {database_line}")
     else:
         print(f"No se encontró similitud con ningún archivo que sobrepase el umbral de plagio de: {threshold}.")
 
