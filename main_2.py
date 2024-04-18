@@ -15,9 +15,11 @@ from sklearn.metrics.pairwise import cosine_similarity
         * Sebastián Burgos Alanís, A01746459
     Materia y Grupo: Desarrollo de aplicaciones avanzadas de ciencias computacionales, TC3002B.201
     Fecha de entrega: Domingo 21 de abril del 2024
+    
+    Todas las variables están declaradas bajo el estandar snake_case
 """
 
-def preprocess_text(text):
+def preprocessed_text(text):
     """
     preproccess_text es una función de preprocesamiento de texto. 
     
@@ -133,28 +135,25 @@ def print_matched_lines(entry_text, database_text, threshold, vectorizer):
     Esta función analiza los textos y calcula la similitud e imprime los textos de
     ambos archivos cuyo plagio fue encontrado.  
     """
-    entry_lines = entry_text.split('\n')
-    database_lines = database_text.split('\n')
+    entry_lines = entry_text.split(' ')
+    database_lines = database_text.split(' ')
     matched_lines = []
+
     for entry_line in entry_lines:
         for database_line in database_lines:
             similarity = calculate_similarity(entry_line, database_line, vectorizer)
-            if similarity > threshold:
-                matched_lines.append((entry_line, database_line))
+            if similarity > threshold and entry_line == database_line:
+                matched_lines.append(entry_line)
 
-    if matched_lines:
-        print(f"Texto Plagiado: ")
-        for entry_line, database_line in matched_lines:
-            print(f"\nArchivo Prueba: {entry_line}")
-            print(f"\nBase de Datos: {database_line}")
-    else:
-        print(f"No se encontró similitud con ningún archivo que sobrepase el umbral de plagio de: {threshold}.")
+    unique_lines = set(matched_lines)
+    plagiarism_result = ' '.join(unique_lines)
+    print(plagiarism_result)
 
     return 0
 
 def main():
     """
-    Función main y controlador de parámetros
+    Función main y controlador de parámetros. 
     """
     # Lectura de archivos
     entry_files = read_files('AE')
@@ -162,9 +161,9 @@ def main():
 
     # Procesamiento de texto
     for i, (filename, text) in enumerate(entry_files):
-        entry_files[i] = (filename, preprocess_text(text))
+        entry_files[i] = (filename, preprocessed_text(text))
     for i, (filename, text) in enumerate(database_files):
-        database_files[i] = (filename, preprocess_text(text))
+        database_files[i] = (filename, preprocessed_text(text))
 
     # Vectorización TF-IDF
     vectorizer = TfidfVectorizer()
