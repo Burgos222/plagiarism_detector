@@ -13,28 +13,37 @@ class TestPlagiarismDetection(unittest.TestCase):
         """
 
         #Inicializar textos para pruebas
-        self.entry_files = [('entry1.txt', 'This is a test entry text.'),
-                            ('entry2.txt', 'Another test entry text.'),
-                            ('entry3.txt', 'Another data text')
-                        ]
-        self.database_files = [('database1.txt', 'This is a database text.'),
-                               ('database2.txt', 'Another database text.'),
-                               ('database3.txt', 'Another test entry text.')
-                            ]   
+        self.entry_files = [
+            ('entry1.txt', 'This is a test entry text.'),
+            ('entry2.txt', 'Another test entry text.'),
+            ('entry3.txt', 'Another data text')
+        ]
 
-        self.second_entry_files = [('entry1.txt', 'This is a test entry text.')
-                                ]
-        
-        self.second_database_files = [('database1.txt', 'This is a test entry text.'),
-                               ('database2.txt', 'This is a test entry text.'),
-                               ('database3.txt', 'This is a test entry text.'),
-                               ('database4.txt', 'This is a test entry text.')
-                            ]
-        
-        self.third_entry_files = [('entry1.txt', 'This is a test entry text.')
-                            ]
-        self.third_database_files = [('database1.txt', 'This is a test entry text.')
-                            ]
+        self.database_files = [
+            ('database1.txt', 'This is a database text.'),
+            ('database2.txt', 'Another database text.'),
+            ('database3.txt', 'Another test entry text.')
+        ]
+
+        self.second_entry_files = [
+            ('entry1.txt', 'This is a test entry text.')
+        ]
+
+        self.second_database_files = [
+            ('database1.txt', 'This is a test entry text.'),
+            ('database2.txt', 'This is a test entry text.'),
+            ('database3.txt', 'This is a test entry text.'),
+            ('database4.txt', 'This is a test entry text.')
+        ]
+
+        self.third_entry_files = [
+            ('entry1.txt', 'This is a test entry text.')
+        ]
+
+        self.third_database_files = [
+            ('database1.txt', 'This is a test entry text.')
+        ]
+
         
         # Ajustar vectorizadores con el texto de los archivos
 
