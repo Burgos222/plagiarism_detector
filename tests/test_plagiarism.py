@@ -117,6 +117,10 @@ class TestPlagiarismDetection(unittest.TestCase):
         #Revisar que al enviar listas vacías, se levante un ValueError
         with self.assertRaises(ValueError):
             detect_plagiarism([], [], self.vectorizer, self.threshold)
+
+        #Revisar que al enviar alguna de las dos litas vacías, se levante un ValueError
+        with self.assertRaises(ValueError):
+            detect_plagiarism([], [[("txt", "txt")]], self.vectorizer, self.threshold)
         
         #Revisar que al enviar tuplas que no sean de dos strings, se levante un ValueError
         with self.assertRaises(ValueError):
