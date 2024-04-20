@@ -171,7 +171,7 @@ def main():
     tfidf_matrix = vectorizer.fit_transform(all_texts)
 
     # Umbral de Similitud
-    threshold = 0.2
+    threshold = 0.1
 
     # Encontrar Plagio
     plagiarism_results = find_plagiarism(entry_files, database_files, vectorizer, threshold)
