@@ -1,6 +1,6 @@
 import unittest
 from sklearn.feature_extraction.text import TfidfVectorizer
-from main_2 import find_plagiarism  # Import the function you want to test
+from main import detect_plagiarism  # Import the function you want to test
 
 class TestPlagiarismDetection(unittest.TestCase):
     """
@@ -32,7 +32,7 @@ class TestPlagiarismDetection(unittest.TestCase):
         Caso de prueba para cuando no se encuentra plagio.
         """
         self.threshold = 0.7
-        result = find_plagiarism([self.entry_files[0]], self.database_files, self.vectorizer, self.threshold)
+        result = detect_plagiarism([self.entry_files[0]], self.database_files, self.vectorizer, self.threshold)
         self.assertEqual(len(result), 0)
 
     def test_plagiarism(self):
@@ -40,7 +40,7 @@ class TestPlagiarismDetection(unittest.TestCase):
         Caso de prueba para cuando se encuentra plagio
         """
         self.threshold = 0.7
-        result = find_plagiarism([self.entry_files[1]], self.database_files, self.vectorizer, self.threshold)
+        result = detect_plagiarism([self.entry_files[1]], self.database_files, self.vectorizer, self.threshold)
         self.assertEqual(len(result), 1) 
 
     def test_some_plagiarism(self):
@@ -48,7 +48,7 @@ class TestPlagiarismDetection(unittest.TestCase):
         Caso de prueba para cuando solo un porcentaje del texto es plagiado.
         """
         self.threshold = 0.3
-        result = find_plagiarism([self.entry_files[2]], self.database_files, self.vectorizer, self.threshold)
+        result = detect_plagiarism([self.entry_files[2]], self.database_files, self.vectorizer, self.threshold)
         self.assertEqual(len(result), 2)
 
     def test_empty_files(self):
@@ -56,7 +56,7 @@ class TestPlagiarismDetection(unittest.TestCase):
         Sí no se envian archivos de entrada, la función debe devolver una lista vacía.
         """
         self.threshold = 0.3
-        result = find_plagiarism([], self.database_files, self.vectorizer, self.threshold)
+        result = detect_plagiarism([], self.database_files, self.vectorizer, self.threshold)
         self.assertEqual(len(result), 0)
 
     def test_missing_list(self):
@@ -64,4 +64,4 @@ class TestPlagiarismDetection(unittest.TestCase):
         self.threshold = 0.3
        
         with self.assertRaises(TypeError):
-            find_plagiarism(1, self.database_files[0], self.vectorizer, self.threshold)
+            detect_plagiarism(1, self.database_files[0], self.vectorizer, self.threshold)
