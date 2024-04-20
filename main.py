@@ -8,6 +8,8 @@ from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_curve
+import matplotlib.pyplot as plt
 
 """
     DETECTOR DE PLAGIO NLP utilizando como tecnica principal TF-IDF para similitud de texto.
@@ -86,7 +88,7 @@ def detect_plagiarism(entry_files, database_files, vectorizer, threshold):
             database_tfidf = vectorizer.transform([database_text])
 
             similarity = cosine_similarity(entry_tfidf, database_tfidf)[0][0]
-            if similarity > threshold:
+            if similarity > 0.01: #esto se cambió solo para determinar la AUC
                 plagiarism_report = {
                     'entry_filename': entry_filename,
                     'database_filename': database_filename,
@@ -130,11 +132,10 @@ def detect_plagiarism(entry_files, database_files, vectorizer, threshold):
 Esta funcion permite calcular nuestra medida de desempeño AUC,
 la cual se calcula a partir de la curva ROC
 '''
-def evaluate_similarity_model(threshold=0.3):
-    entry_files = read_files('AE_2')
+def evaluate_similarity_model(threshold=0.5):
+    entry_files = read_files('AP')
     database_files = read_files('AS')
 
-    # Preparar vectorizador TF-IDF
     vectorizer = TfidfVectorizer()
     all_texts = [text for _, text in entry_files] + [text for _, text in database_files]
     tfidf_matrix = vectorizer.fit_transform(all_texts)
@@ -149,13 +150,10 @@ def evaluate_similarity_model(threshold=0.3):
     # Procesar resultados para asignar etiquetas y recolectar puntuaciones
     for result in results:
         similarity = result['similarity']
-        print(f"Similitud: {similarity:.2f}")
         if similarity > threshold:
             true_labels.append(1)
-            print("Asignado: 1")
         else:
             true_labels.append(0)
-            print("Asignado: 0")
         similarity_scores.append(similarity)
 
     # Convertir listas a arrays NumPy para calcular el AUC
@@ -165,18 +163,30 @@ def evaluate_similarity_model(threshold=0.3):
     # Verificar si hay variabilidad en las etiquetas
     unique_labels = np.unique(true_labels)
     
+    # manejador de excepciones para evitar errores
     if len(unique_labels) < 2:
-        print("Advertencia: No se han asignado suficientes etiquetas diferentes.")
+        raise ValueError("Advertencia: No se han asignado suficientes etiquetas diferentes.")
 
-    # Calcular el AUC si hay suficiente variabilidad en las etiquetas
+    for result in results:
+        print(f"\nArchivo Prueba '{result['entry_filename']}' tiene similitud del {result['similarity']:.2f}% con el archivo '{result['database_filename']}':")
+        print(result['plagiarism_report'])
+
+    # Calcular el AUC solo si hay suficiente variabilidad en las etiquetas
     if len(unique_labels) >= 2:
         auc_score = roc_auc_score(true_labels, similarity_scores)
         print('------------------------------------------------------------------')
         print(f"AUC para la detección de similitud de texto con umbral {threshold}: {auc_score:.4f}")
         print('------------------------------------------------------------------')
 
-    for result in results:
-        print(f"\nArchivo Prueba '{result['entry_filename']}' tiene similitud del {result['similarity']:.2f}% con el archivo '{result['database_filename']}':")
-        print(result['plagiarism_report'])
+        # Graficar la curva ROC
+        fpr, tpr, thresholds = roc_curve(true_labels, similarity_scores)
+        plt.figure(figsize=(8, 6))
+        plt.plot(fpr, tpr, color='blue', label='ROC curve')
+        plt.plot([0, 1], [0, 1], color='red', linestyle='--', label='Random guess')
+        plt.xlabel('False Positive Rate (FPR)')
+        plt.ylabel('True Positive Rate (TPR)')
+        plt.title('Receiver Operating Characteristic (ROC) Curve')
+        plt.legend()
+        plt.show()
 
-evaluate_similarity_model(threshold=0.3)
+evaluate_similarity_model(threshold=0.5)
