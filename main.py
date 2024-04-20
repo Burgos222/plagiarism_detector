@@ -57,8 +57,12 @@ def read_files(folder):
     for i in os.listdir(folder_path):
         filepath = os.path.join(folder_path, i)
         if os.path.isfile(filepath):
-            with open(filepath, 'r') as file:
-                files.append((i, preprocess_text(file.read())))
+            try:
+                with open(filepath, 'r', encoding='utf-8') as file:
+                    files.append((i, preprocess_text(file.read())))
+            except Exception as e:
+                print(f"Error reading file '{i}': {e}")
+                continue
     return files
 
 def detect_plagiarism(entry_files, database_files, vectorizer, threshold):
@@ -128,7 +132,7 @@ database_files = read_files('AS')
 vectorizer = TfidfVectorizer()
 all_texts = [text for _, text in entry_files + database_files]
 tfidf_matrix = vectorizer.fit_transform(all_texts)
-threshold = 0.2
+threshold = 0.6
 
 results = detect_plagiarism(entry_files, database_files, vectorizer, threshold)
 
