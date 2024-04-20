@@ -132,7 +132,7 @@ def detect_plagiarism(entry_files, database_files, vectorizer, threshold):
 Esta funcion permite calcular nuestra medida de desempeño AUC,
 la cual se calcula a partir de la curva ROC
 '''
-def evaluate_similarity_model(threshold=0.5):
+def evaluate_similarity_model(threshold=0.2):
     entry_files = read_files('AP')
     database_files = read_files('AS')
 
@@ -189,4 +189,4 @@ def evaluate_similarity_model(threshold=0.5):
         plt.legend()
         plt.show()
 
-evaluate_similarity_model(threshold=0.5)
+evaluate_similarity_model(threshold=0.2)
