@@ -88,7 +88,7 @@ def detect_plagiarism(entry_files, database_files, vectorizer, threshold):
             database_tfidf = vectorizer.transform([database_text])
 
             similarity = cosine_similarity(entry_tfidf, database_tfidf)[0][0]
-            if similarity > 0.01: #esto se cambió solo para determinar la AUC
+            if similarity > threshold:
                 plagiarism_report = {
                     'entry_filename': entry_filename,
                     'database_filename': database_filename,
@@ -125,16 +125,33 @@ def detect_plagiarism(entry_files, database_files, vectorizer, threshold):
     return plagiarism_results
 
 """
-    Zona de control
+    Zona de control de parámetros
 """
+entry_files = read_files('AP')
+database_files = read_files('AS')
+vectorizer = TfidfVectorizer()
+all_texts = [text for _, text in entry_files + database_files]
+tfidf_matrix = vectorizer.fit_transform(all_texts)
+threshold = 0.6
+
+results = detect_plagiarism(entry_files, database_files, vectorizer, threshold)
+
+for result in results:
+    print(f"\nArchivo Prueba '{result['entry_filename']}' tiene similitud del {result['similarity']:.2f}% con el archivo '{result['database_filename']}':")
+    print(result['plagiarism_report'])
+
 
 '''
-Esta funcion permite calcular nuestra medida de desempeño AUC,
-la cual se calcula a partir de la curva ROC
+    En caso de querer correr las pruebas de AUC y ROC, comentar de la linea 130 a 141
+    Y descomentar la función de evaluate_similarity_model(). 
+    cambiar el umbral de la linea 91 a threshold = 0.01
 '''
-def evaluate_similarity_model(threshold=0.2):
-    entry_files = read_files('AP')
-    database_files = read_files('AS')
+
+'''
+    Esta funcion permite calcular nuestra medida de desempeño AUC,
+    la cual se calcula a partir de la curva ROC
+
+def evaluate_similarity_model(threshold):
 
     vectorizer = TfidfVectorizer()
     all_texts = [text for _, text in entry_files] + [text for _, text in database_files]
@@ -190,3 +207,4 @@ def evaluate_similarity_model(threshold=0.2):
         plt.show()
 
 evaluate_similarity_model(threshold=0.2)
+'''

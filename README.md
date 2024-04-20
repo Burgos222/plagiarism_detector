@@ -1,8 +1,13 @@
-** If you are new, you should run this lines on the cmd for the code to work correctly: 
+-----------------------------
+    Instrucciones de uso
+-----------------------------
+
+
+** Correr esta linea en la cmd, encaso de que sea tu primera vez corriendo el código: 
 
 pip install nltk scikit-learn
 
-** And this lines for the first time on main_2.py:
+** Correr estas lineas dentro del código si es tu primera vez ejecutándolo:
 
 nltk.download('punkt')
 nltk.download('stopwords')
