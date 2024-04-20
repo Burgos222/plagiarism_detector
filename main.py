@@ -123,8 +123,8 @@ def detect_plagiarism(entry_files, database_files, vectorizer, threshold):
 """
     Zona de control
 """
-entry_files = read_files('AE')
-database_files = read_files('AP')
+entry_files = read_files('AP')
+database_files = read_files('AS')
 vectorizer = TfidfVectorizer()
 all_texts = [text for _, text in entry_files + database_files]
 tfidf_matrix = vectorizer.fit_transform(all_texts)
