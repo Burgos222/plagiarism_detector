@@ -1,0 +1,5 @@
+
+
+Commercial applications of artificial intelligence and machine learning have made remarkable progress recently, particularly in areas such as image recognition, natural speech processing, language translation, textual analysis, and self-learning. Progress had historically languished in these areas, such that these skills had come to seem ineffably bound to intelligence. However, these commercial advances have performed best at single-task applications in which imperfect outputs and occasional frank errors can be tolerated.
+
+The practice of anesthesiology is different. It embodies a requirement for high reliability, and a pressured cycle of interpretation, physical action, and response rather than any single cognitive act. This review covers the basics of what is meant by artificial intelligence and machine learning for the practicing anesthesiologist, describing how decision-making behaviors can emerge from simple equations. Relevant clinical questions are introduced to illustrate how machine learning might help solve them—perhaps bringing anesthesiology into an era of machine-assisted discovery.

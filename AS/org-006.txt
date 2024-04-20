@@ -1,0 +1,10 @@
+As addressed by Stephen Yang in his ICCE 2019 keynote speech (Yang, 2019), precision
+education is a new challenge when applying artificial intelligence (AI), machine learning, and learning analytics
+to improve teaching quality and learning performance. The goal of precision education is to identify at-risk
+students as early as possible and provide timely intervention on the basis of teaching and learning experiences
+(Lu et al., 2018). Drawing from this main theme of precision education, this special issue advocates an in-depth
+dialogue between cold technology and warm humanity, in turn offering greater understanding of precision
+education. For this special issue, thirteen research papers that specialize in precision education, AI, machine
+learning, and learning analytics to engage in an in-depth research experiences concerning various applications,
+methods, pedagogical models, and environments were exchanged to achieve better understanding of the
+application of AI in education

@@ -1,0 +1,7 @@
+Artificial intelligence (AI) is rapidly transforming various industries, including education. AI is being used in educational management
+to enhance the learning process, improve student outcomes, and streamline administrative tasks. This research work aims to explore the
+application of AI in educational management, including its benefits and challenges. The research work employs a systematic review
+methodology, examining the literature on AI in educational management. The study finds that AI has several advantages, including
+improving student engagement, personalization of learning, and cost-effectiveness. However, AI also poses several challenges, such as
+ethical concerns, potential biases, and the need for re-skilling the workforce. The research concludes that AI has an enormous capacity
+to improve educational management, but it must be deployed with care and caution.
