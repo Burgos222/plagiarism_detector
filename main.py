@@ -79,6 +79,30 @@ def detect_plagiarism(entry_files, database_files, vectorizer, threshold):
     del archivo de entrada, el archivo de base de datos con el que tuvo coincidencia, sus textos, 
     y su similitud en porcentaje. 
     """
+   
+
+     # Verificar si entry_files y database_files son listas
+    if not isinstance(entry_files, list) or not isinstance(database_files, list):
+        raise TypeError("entry_files y database_files deben ser listas")
+
+    # Verificar si las listas no están vacías
+    if not entry_files or not database_files:
+        raise ValueError("entry_files y database_files no pueden estar vacías")
+
+    # Verificar si cada elemento de entry_files y database_files es una tupla de dos strings
+    for file_list in [entry_files, database_files]:
+        for file_tuple in file_list:
+            if not isinstance(file_tuple, tuple) or len(file_tuple) != 2:
+                raise ValueError("Cada elemento de la lista debe ser una tupla de dos strings")
+            if not all(isinstance(item, str) for item in file_tuple):
+                raise ValueError("Cada elemento de la tupla debe ser un string")
+              
+    # Verificar si vectorizer es un objeto de tipo TfidfVectorizer
+    if not isinstance(vectorizer, TfidfVectorizer):
+        raise TypeError("El vectorizer debe ser un objeto de tipo TfidfVectorizer")
+
+
+
     plagiarism_results = []
 
     for entry_filename, entry_text in entry_files:
