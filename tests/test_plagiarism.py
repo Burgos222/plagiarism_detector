@@ -1,6 +1,18 @@
 import unittest
 from sklearn.feature_extraction.text import TfidfVectorizer
-from main import detect_plagiarism  # Import the function you want to test
+from main import detect_plagiarism
+
+"""
+    DETECTOR DE PLAGIO NLP utilizando como tecnica principal TF-IDF para similitud de texto.
+    Autores: 
+        * Alan Said Martinez Guzmán, A01746210
+        * Alvaro Enrique Garcia Espinosa, A01781511
+        * Sebastián Burgos Alanís, A01746459
+    Materia y Grupo: Desarrollo de aplicaciones avanzadas de ciencias computacionales, TC3002B.201
+    Fecha de entrega: Domingo 21 de abril del 2024
+    
+    Todas las variables están declaradas bajo el estandar snake_case
+"""
 
 class TestPlagiarismDetection(unittest.TestCase):
     """
@@ -105,7 +117,8 @@ class TestPlagiarismDetection(unittest.TestCase):
         self.assertAlmostEqual(result[0]['similarity'], 1.0, delta = margin)
   
     def test_file_correctness(self):
-        """Esta caso de prueba revisa que los archivos que recibe la función detect_plagiarism 
+        """
+        Esta caso de prueba revisa que los archivos que recibe la función detect_plagiarism 
         sean correctos, es decir, que sean listas de tuplas con dos strings cada una.
         """
         self.threshold = 0.3
@@ -132,7 +145,8 @@ class TestPlagiarismDetection(unittest.TestCase):
     
 
     def test_vectorizer_type(self):
-        """Este caso de prueba revisa que el vectorizador que recibe la función detect_plagiarism 
+        """
+        Este caso de prueba revisa que el vectorizador que recibe la función detect_plagiarism 
         sea correcto, es decir, que sea un objeto de tipo TfidfVectorizer.
         """
         self.threshold = 0.3

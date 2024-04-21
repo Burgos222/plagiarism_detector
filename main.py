@@ -79,17 +79,12 @@ def detect_plagiarism(entry_files, database_files, vectorizer, threshold):
     del archivo de entrada, el archivo de base de datos con el que tuvo coincidencia, sus textos, 
     y su similitud en porcentaje. 
     """
-   
-
-     # Verificar si entry_files y database_files son listas
     if not isinstance(entry_files, list) or not isinstance(database_files, list):
         raise TypeError("entry_files y database_files deben ser listas")
 
-    # Verificar si las listas no están vacías
     if not entry_files or not database_files:
         raise ValueError("entry_files y database_files no pueden estar vacías")
 
-    # Verificar si cada elemento de entry_files y database_files es una tupla de dos strings
     for file_list in [entry_files, database_files]:
         for file_tuple in file_list:
             if not isinstance(file_tuple, tuple) or len(file_tuple) != 2:
@@ -97,11 +92,8 @@ def detect_plagiarism(entry_files, database_files, vectorizer, threshold):
             if not all(isinstance(item, str) for item in file_tuple):
                 raise ValueError("Cada elemento de la tupla debe ser un string")
               
-    # Verificar si vectorizer es un objeto de tipo TfidfVectorizer
     if not isinstance(vectorizer, TfidfVectorizer):
         raise TypeError("El vectorizer debe ser un objeto de tipo TfidfVectorizer")
-
-
 
     plagiarism_results = []
 
@@ -164,17 +156,17 @@ for result in results:
     print(f"\nArchivo Prueba '{result['entry_filename']}' tiene similitud del {result['similarity']:.2f}% con el archivo '{result['database_filename']}':")
     print(result['plagiarism_report'])
 
-
 '''
     En caso de querer correr las pruebas de AUC y ROC, comentar de la linea 130 a 141
     Y descomentar la función de evaluate_similarity_model(). 
-    cambiar el umbral de la linea 91 a threshold = 0.01
+    cambiar el umbral de la linea 91 a "threshold = 0.01"
 '''
 
 '''
     Esta funcion permite calcular nuestra medida de desempeño AUC,
     la cual se calcula a partir de la curva ROC
-
+'''
+'''
 def evaluate_similarity_model(threshold):
 
     vectorizer = TfidfVectorizer()
