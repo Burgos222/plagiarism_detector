@@ -23,7 +23,8 @@ import matplotlib.pyplot as plt
     Todas las variables están declaradas bajo el estandar snake_case
 """
 
-"""
+def preprocess_text(text):
+    """
     preproccess_text es una función de preprocesamiento de texto. 
     
         Entrada: archivo de texto abierto 
@@ -33,8 +34,6 @@ import matplotlib.pyplot as plt
     se tokenizan las palabras de cada texto, se elimian todos los stop_words y
     se hace un lemmatizer para reducir las palabras a su raíz.
     """
-
-def preprocess_text(text):
     text = text.lower()
     tokens = word_tokenize(text)
     tokens = [re.sub(r'[^a-zA-Z]', '', token) for token in tokens]
@@ -46,7 +45,8 @@ def preprocess_text(text):
     text = ' '.join(tokens)
     return text
 
-"""
+def read_files(folder):
+    """
     read_files es una función de lectura de archivos dentro de las 
     carpetas de prueba y de base de datos.
 
@@ -56,8 +56,6 @@ def preprocess_text(text):
     En esta función, se recibe la ruta de un folder y comienza a iterar
     sobre los archivos del mismo para almacenarlos en una lista llamada files. 
     """
-
-def read_files(folder):
     folder_path = os.path.join('.', folder)
     files = []
     for i in os.listdir(folder_path):
@@ -67,7 +65,8 @@ def read_files(folder):
                 files.append((i, preprocess_text(file.read())))
     return files
 
-"""
+def detect_plagiarism(entry_files, database_files, vectorizer, threshold):
+    """
     find_plagiarism es una función que encuentra plagio entre todos los archvios de entrada y 
     base de datos.
 
@@ -80,8 +79,6 @@ def read_files(folder):
     del archivo de entrada, el archivo de base de datos con el que tuvo coincidencia, sus textos, 
     y su similitud en porcentaje. 
     """
-
-def detect_plagiarism(entry_files, database_files, vectorizer, threshold):
     if not isinstance(entry_files, list) or not isinstance(database_files, list):
         raise TypeError("entry_files y database_files deben ser listas")
 
@@ -107,7 +104,7 @@ def detect_plagiarism(entry_files, database_files, vectorizer, threshold):
             database_tfidf = vectorizer.transform([database_text])
 
             similarity = cosine_similarity(entry_tfidf, database_tfidf)[0][0]
-            if similarity > threshold:
+            if similarity > 0.01:
                 plagiarism_report = {
                     'entry_filename': entry_filename,
                     'database_filename': database_filename,
@@ -143,18 +140,66 @@ def detect_plagiarism(entry_files, database_files, vectorizer, threshold):
 
     return plagiarism_results
 
-"""
-    Zona de control de parámetros
-"""
-entry_files = read_files('AP')
-database_files = read_files('AS')
-vectorizer = TfidfVectorizer()
-all_texts = [text for _, text in entry_files + database_files]
-tfidf_matrix = vectorizer.fit_transform(all_texts)
-threshold = 0.6
+'''
+    Esta funcion permite calcular nuestra medida de desempeño AUC,
+    la cual se calcula a partir de la similitud coseno y las etiquetas generadas.
+'''
 
-results = detect_plagiarism(entry_files, database_files, vectorizer, threshold)
+def evaluate_similarity_model(threshold):
+    entry_files = read_files('AP')
+    database_files = read_files('AS')
 
-for result in results:
-    print(f"\nArchivo Prueba '{result['entry_filename']}' tiene similitud del {result['similarity']:.2f}% con el archivo '{result['database_filename']}':")
-    print(result['plagiarism_report'])
+    vectorizer = TfidfVectorizer()
+    all_texts = [text for _, text in entry_files] + [text for _, text in database_files]
+    tfidf_matrix = vectorizer.fit_transform(all_texts)
+
+    # Obtener resultados de detección de plagio
+    results = detect_plagiarism(entry_files, database_files, vectorizer, threshold)
+
+    # Inicializar listas para etiquetas y puntuaciones de similitud
+    true_labels = []
+    similarity_scores = []
+
+    # Procesar resultados para asignar etiquetas y recolectar puntuaciones
+    for result in results:
+        similarity = result['similarity']
+        if similarity > threshold:
+            true_labels.append(1)
+        else:
+            true_labels.append(0)
+        similarity_scores.append(similarity)
+
+    # Convertir listas a arrays NumPy para calcular el AUC
+    true_labels = np.array(true_labels)
+    similarity_scores = np.array(similarity_scores)
+
+    # Verificar si hay variabilidad en las etiquetas
+    unique_labels = np.unique(true_labels)
+    
+    # manejador de excepciones para evitar errores
+    if len(unique_labels) < 2:
+        raise ValueError("Advertencia: No se han asignado suficientes etiquetas diferentes.")
+
+    for result in results:
+        print(f"\nArchivo Prueba '{result['entry_filename']}' tiene similitud del {result['similarity']:.2f}% con el archivo '{result['database_filename']}':")
+        print(result['plagiarism_report'])
+
+    # Calcular el AUC solo si hay suficiente variabilidad en las etiquetas
+    if len(unique_labels) >= 2:
+        auc_score = roc_auc_score(true_labels, similarity_scores)
+        print('------------------------------------------------------------------')
+        print(f"AUC para la detección de similitud de texto con umbral {threshold}: {auc_score:.4f}")
+        print('------------------------------------------------------------------')
+
+        # Graficar la curva ROC
+        fpr, tpr, thresholds = roc_curve(true_labels, similarity_scores)
+        plt.figure(figsize=(8, 6))
+        plt.plot(fpr, tpr, color='blue', label='ROC curve')
+        plt.plot([0, 1], [0, 1], color='red', linestyle='--', label='Random guess')
+        plt.xlabel('False Positive Rate (FPR)')
+        plt.ylabel('True Positive Rate (TPR)')
+        plt.title('Receiver Operating Characteristic (ROC) Curve')
+        plt.legend()
+        plt.show()
+
+evaluate_similarity_model(threshold=0.2)
