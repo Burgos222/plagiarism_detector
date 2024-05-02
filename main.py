@@ -7,9 +7,6 @@ from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.metrics import roc_auc_score
-from sklearn.metrics import roc_curve
-import matplotlib.pyplot as plt
 
 """
     DETECTOR DE PLAGIO NLP utilizando como tecnica principal TF-IDF para similitud de texto.
@@ -146,6 +143,7 @@ def detect_plagiarism(entry_files, database_files, vectorizer, threshold):
 """
     Zona de control de parámetros
 """
+
 entry_files = read_files('AP')
 database_files = read_files('AS')
 vectorizer = TfidfVectorizer()

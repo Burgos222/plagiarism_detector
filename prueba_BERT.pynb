@@ -1,0 +1,82 @@
+from transformers import AutoTokenizer, AutoModel
+from sklearn.metrics.pairwise import cosine_similarity
+import torch
+import numpy as np
+import os
+from google.colab import drive
+
+drive.mount("/content/gdrive")
+
+suspicious_folder = "/content/gdrive/MyDrive/project_bert/suspicious"
+dataset_folder = "/content/gdrive/MyDrive/project_bert/dataset"
+
+model_name = 'sentence-transformers/bert-base-nli-mean-tokens'
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModel.from_pretrained(model_name)
+
+# Función para obtener los embeddings promedio de un texto
+def get_mean_pooling_embeddings(text, tokenizer, model):
+    tokens = tokenizer.encode_plus(text, max_length=128,
+                                    truncation=True, padding='max_length',
+                                    return_tensors='pt')
+    with torch.no_grad():
+        outputs = model(**tokens)
+        embeddings = outputs.last_hidden_state
+        attention_mask = tokens['attention_mask']
+        mask = attention_mask.unsqueeze(-1).expand(embeddings.shape).float()
+        mask_embeddings = embeddings * mask
+        summed = torch.sum(mask_embeddings, 1)
+        counts = torch.clamp(mask.sum(1), min=1e-9)
+        mean_pooled = summed / counts
+        return mean_pooled
+    
+def load_texts_from_folder(folder_path):
+    texts = []
+    for filename in os.listdir(folder_path):
+        filepath = os.path.join(folder_path, filename)
+        if os.path.isfile(filepath):
+            with open(filepath, 'r', encoding='utf-8', errors='ignore') as file:
+                try:
+                    text = file.read()
+                    texts.append(text)
+                except UnicodeDecodeError as e:
+                    print(f"Error al decodificar el archivo {filepath}: {e}")
+    return texts
+
+suspicious_texts = load_texts_from_folder(suspicious_folder)
+dataset_texts = load_texts_from_folder(dataset_folder)
+
+
+def compare_texts_with_dataset(suspicious_texts, dataset_texts, tokenizer, model):
+    # Obtener embeddings para los textos en 'suspicious'
+    suspicious_embeddings = [get_mean_pooling_embeddings(text, tokenizer, model) for text in suspicious_texts]
+
+    # Obtener embeddings para los textos en 'dataset'
+    dataset_embeddings = [get_mean_pooling_embeddings(text, tokenizer, model) for text in dataset_texts]
+
+    # Convertir embeddings a numpy arrays
+    suspicious_embeddings = [emb.squeeze() for emb in suspicious_embeddings]
+    dataset_embeddings = [emb.squeeze() for emb in dataset_embeddings]
+
+    if suspicious_embeddings and dataset_embeddings:
+        suspicious_files = [os.path.basename(filepath) for filepath in os.listdir(suspicious_folder) if os.path.isfile(os.path.join(suspicious_folder, filepath))]
+        suspicious_files = sorted(os.listdir(suspicious_folder))
+
+        for idx, suspicious_embedding in enumerate(suspicious_embeddings):
+            suspicious_filename = suspicious_files[idx]
+            suspicious_embedding = suspicious_embedding.reshape(1, -1)  # Convertir a matriz de una sola fila
+            similarities = cosine_similarity(suspicious_embedding, dataset_embeddings)
+
+            similarity_list = [(os.path.basename(dataset_file), similarity) for dataset_file, similarity in zip(os.listdir(dataset_folder), similarities.flatten())]
+            similarity_list.sort(key=lambda x: x[1], reverse=True)
+
+            comparison_result = f"Comparación del texto sospechoso '{suspicious_filename}' con todos los textos del dataset:\n"
+            comparison_result += "[" + ", ".join([f"{file}: {similarity:.6f}" for file, similarity in similarity_list]) + "]"
+            print("-------------------------------------------------------------------------------------------------------------")
+            print(comparison_result)
+
+    else:
+        print("No se encontraron textos para procesar.")
+
+
+compare_texts_with_dataset(suspicious_texts, dataset_texts, tokenizer, model)
