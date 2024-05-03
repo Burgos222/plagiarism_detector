@@ -6,24 +6,5 @@ DETECTOR DE PLAGIO NLP utilizando como tecnica principal TF-IDF para similitud d
     Materia y Grupo: Desarrollo de aplicaciones avanzadas de ciencias computacionales, TC3002B.201
     Fecha de entrega: Domingo 21 de abril del 2024
 
------------------------------
-    Instrucciones de uso
------------------------------
-
-** Correr esta linea en la cmd, encaso de que sea tu primera vez corriendo el código: 
-
-pip install nltk scikit-learn
-pip install matplotlib
-
-** Correr estas lineas dentro del código si es tu primera vez ejecutándolo:
-
-nltk.download('punkt')
-nltk.download('stopwords')
-nltk.download('wordnet')
-
--------------------------------------------
-    Instrucciones de Pruebas Unitarias
--------------------------------------------
-** En cmd correr: 
-
-python3 -m unittest
+Liga para acceder al Google Colab: 
+https://colab.research.google.com/drive/1eY3qBVIidzjaHNFbYlx9twM33D99wSRM?usp=sharing
