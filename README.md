@@ -1,6 +1,6 @@
 DETECTOR DE PLAGIO utilizando como tecnica principal BERT y SpaCy para clasificación de txto.
-    Autores:
     
+    Autores:
         * Alan Said Martinez Guzmán, A01746210
         * Alvaro Enrique Garcia Espinosa, A01781511
         * Sebastián Burgos Alanís, A01746459
