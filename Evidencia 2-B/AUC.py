@@ -146,8 +146,8 @@ def detect_plagiarism(entry_files, database_files, vectorizer, threshold):
 '''
 
 def evaluate_similarity_model(threshold):
-    entry_files = read_files('AP')
-    database_files = read_files('AS')
+    entry_files = read_files('/AP')
+    database_files = read_files('/AS')
 
     vectorizer = TfidfVectorizer()
     all_texts = [text for _, text in entry_files] + [text for _, text in database_files]
